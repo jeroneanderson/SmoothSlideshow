@@ -68,7 +68,6 @@ private:
     QWidget* m_topFrame;
     QPushButton* m_btnSelectFolder;
     QPushButton* m_btnStart;
-    QPushButton* m_btnResume;
     QPushButton* m_btnQuit;
     QLabel* m_lblVersion;
     

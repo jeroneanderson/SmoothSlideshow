@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_controlsVisible(true)
 {
     // Window Setup
+    qDebug() << "MainWindow Constructor Start";
     // Window Setup
     setWindowTitle("Smooth Slideshow C++ v1.1.0");
     // Styling is handled globally in main.cpp via Fusion style and QPalette
@@ -33,12 +34,17 @@ MainWindow::MainWindow(QWidget *parent)
         populateThumbnails();
     });
     
+    qDebug() << "Starting thread...";
     m_thumbThread->start();
 
+    qDebug() << "Calling setupUi...";
     setupUi();
+    qDebug() << "setupUi done.";
     
     // Load config
+    qDebug() << "Loading config...";
     ConfigManager::instance().load();
+    qDebug() << "Config loaded.";
     
     // Apply Config to UI
     m_chkRecursive->setChecked(ConfigManager::instance().recursive());
@@ -64,12 +70,14 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setupUi() {
+    qDebug() << "setupUi: Start";
     m_centralWidget = new QWidget(this);
     setCentralWidget(m_centralWidget);
     
     QVBoxLayout* layout = new QVBoxLayout(m_centralWidget);
     layout->setContentsMargins(0,0,0,0);
     
+    qDebug() << "setupUi: Creating StackedWidget";
     m_stackedWidget = new QStackedWidget(this);
     layout->addWidget(m_stackedWidget);
     
@@ -78,6 +86,7 @@ void MainWindow::setupUi() {
     m_mainLayout = new QVBoxLayout(m_gridPage);
     
     // Top Controls
+    qDebug() << "setupUi: Creating TopFrame";
     m_topFrame = new QWidget();
     QHBoxLayout* topLayout = new QHBoxLayout(m_topFrame);
     m_btnSelectFolder = new QPushButton("Select Folder");
@@ -87,7 +96,6 @@ void MainWindow::setupUi() {
     
     topLayout->addWidget(m_btnSelectFolder);
     topLayout->addWidget(m_btnStart);
-    topLayout->addWidget(m_btnResume);
     topLayout->addWidget(m_btnQuit);
     topLayout->addStretch();
     topLayout->addWidget(m_lblVersion);
@@ -95,6 +103,7 @@ void MainWindow::setupUi() {
     m_mainLayout->addWidget(m_topFrame);
     
     // Options
+    qDebug() << "setupUi: Creating OptionsFrame";
     m_optionsFrame = new QWidget();
     QHBoxLayout* optLayout = new QHBoxLayout(m_optionsFrame);
     
@@ -121,6 +130,7 @@ void MainWindow::setupUi() {
     m_btnClearCache = new QPushButton("Clear Cache");
     optLayout->addWidget(m_btnClearCache);
 
+    qDebug() << "setupUi: Creating Zoom Slider";
     optLayout->addWidget(new QLabel("Zoom:"));
     m_sliderZoom = new QSlider(Qt::Horizontal);
     m_sliderZoom->setRange(50, 300);
@@ -133,6 +143,7 @@ void MainWindow::setupUi() {
     m_mainLayout->addWidget(m_optionsFrame);
     
     // Folder Display
+    qDebug() << "setupUi: Creating Folder Display";
     m_lblFolder = new QLabel("Current Folder:");
     m_mainLayout->addWidget(m_lblFolder);
     m_txtFolderDisplay = new QTextEdit();
@@ -145,6 +156,7 @@ void MainWindow::setupUi() {
     m_mainLayout->addWidget(m_lblCachePath);
     
     // Thumbnails
+    qDebug() << "setupUi: Creating ListWidget";
     m_listWidget = new QListWidget();
     m_listWidget->setViewMode(QListWidget::IconMode);
     m_listWidget->setIconSize(QSize(150, 150));
@@ -172,13 +184,15 @@ void MainWindow::setupUi() {
     m_stackedWidget->addWidget(m_gridPage);
     
     // --- Page 1: Slideshow ---
+    qDebug() << "setupUi: Creating SlideshowWidget";
     m_slideshowPage = new SlideshowWidget();
     m_stackedWidget->addWidget(m_slideshowPage);
     
     // Connections
+    qDebug() << "setupUi: Connecting Signals";
     connect(m_btnSelectFolder, &QPushButton::clicked, this, &MainWindow::selectFolder);
     connect(m_btnStart, &QPushButton::clicked, this, &MainWindow::startSlideshow);
-    connect(m_btnResume, &QPushButton::clicked, this, &MainWindow::resumeSlideshow);
+    // connect(m_btnResume, &QPushButton::clicked, this, &MainWindow::resumeSlideshow); // Removed
     connect(m_btnQuit, &QPushButton::clicked, this, &MainWindow::quitApplication);
     connect(m_btnClearCache, &QPushButton::clicked, this, &MainWindow::clearCache);
     
@@ -195,12 +209,14 @@ void MainWindow::setupUi() {
     
     connect(m_listWidget, &QListWidget::itemClicked, this, &MainWindow::onThumbnailClicked);
     
+    qDebug() << "setupUi: Connecting Slider";
     connect(m_sliderZoom, &QSlider::valueChanged, [this](int value){
          m_listWidget->setIconSize(QSize(value, value));
          m_listWidget->setGridSize(QSize(value + 20, value + 50)); // More vertical space for text
          calculatePagination();
          displayCurrentPage();
     });
+    qDebug() << "setupUi: All Done";
 }
 
 void MainWindow::selectFolder() {
