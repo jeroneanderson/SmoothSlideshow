@@ -17,13 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     // Window Setup
     setWindowTitle("Smooth Slideshow C++ v1.0.45");
-    setStyleSheet("QMainWindow { background-color: #222; color: white; }"
-                  "QWidget { color: white; }"
-                  "QLineEdit { background-color: #444; color: white; border: 1px solid #555; }"
-                  "QTextEdit { background-color: #333; color: white; border: none; }"
-                  "QPushButton { background-color: #444; color: white; border: 1px solid #555; padding: 5px; }"
-                  "QPushButton:hover { background-color: #555; }"
-                  "QListWidget { background-color: #222; border: none; }");
+    // Window Setup
+    setWindowTitle("Smooth Slideshow C++ v1.0.45");
+    // Styling is handled globally in main.cpp via Fusion style and QPalette
                   
     // Threading Setup
     m_thumbThread = new QThread(this);
