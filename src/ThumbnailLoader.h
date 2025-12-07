@@ -24,6 +24,7 @@ public:
 
     void setPaths(const QStringList& paths);
     void updatePriority(int page, int thumbsPerPage);
+    void requestClear();
     void stop();
 
 signals:
@@ -33,9 +34,9 @@ signals:
 public slots:
     void process();
     void cleanCache();
-    void clearCache();
 
 private:
+    void clearCache(); // moved to private helper
     void loadCacheMetadata();
     void saveCacheMetadata();
     QString getCacheFilePath(const QString& path);
@@ -43,6 +44,7 @@ private:
     QMutex m_mutex;
     QWaitCondition m_condition;
     bool m_abort;
+    bool m_pendingClear;
     QStringList m_paths;
     int m_currentPage;
     int m_thumbsPerPage;

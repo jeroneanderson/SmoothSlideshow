@@ -465,6 +465,6 @@ void MainWindow::clearCache() {
     reply = QMessageBox::question(this, "Clear Cache", "Are you sure you want to clear the thumbnail cache?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        QMetaObject::invokeMethod(m_thumbLoader, "clearCache", Qt::QueuedConnection);
+        m_thumbLoader->requestClear();
     }
 }

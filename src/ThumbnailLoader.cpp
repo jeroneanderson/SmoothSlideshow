@@ -12,7 +12,7 @@
 #include "ConfigManager.h"
 
 ThumbnailLoader::ThumbnailLoader(QObject* parent) 
-    : QObject(parent), m_abort(false), m_currentPage(0), m_thumbsPerPage(20)
+    : QObject(parent), m_abort(false), m_pendingClear(false), m_currentPage(0), m_thumbsPerPage(20)
 {
     m_cacheDir = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/Endless_Slides/thumbnails";
     m_metadataFile = m_cacheDir + "/cache_metadata.json";
@@ -33,6 +33,12 @@ ThumbnailLoader::~ThumbnailLoader() {
 void ThumbnailLoader::stop() {
     QMutexLocker locker(&m_mutex);
     m_abort = true;
+    m_condition.wakeOne();
+}
+
+void ThumbnailLoader::requestClear() {
+    QMutexLocker locker(&m_mutex);
+    m_pendingClear = true;
     m_condition.wakeOne();
 }
 
@@ -59,6 +65,14 @@ void ThumbnailLoader::process() {
         {
             QMutexLocker locker(&m_mutex);
             if (m_abort) break;
+            
+            if (m_pendingClear) {
+                 locker.unlock(); // Release lock while clearing files
+                 clearCache();
+                 locker.relock();
+                 m_pendingClear = false;
+                 continue; // Restart loop
+            }
             
             // Wait until we have paths
             if (m_paths.isEmpty()) {
@@ -246,7 +260,17 @@ void ThumbnailLoader::cleanCache() {
 }
 
 void ThumbnailLoader::clearCache() {
-    QMutexLocker locker(&m_mutex);
+    // LOCK HELD BY CALLER? NO, caller unlocks before calling this.
+    // But we need to be careful.
+    // Actually, process() unlocks before calling this.
+    // So this function should lock if it needs protection? 
+    // Wait, process: unlock -> clearCache -> relock.
+    // So clearCache is running without lock.
+    // BUT we are iterating directory. That's fine.
+    // Accessing m_metadata.clear() -> that needs lock if others access it?
+    // Only process() accesses it. So it's safe.
+    // However, cleanCache() slot might run? No, loop blocks slots.
+    // So we are sole owner of m_metadata here.
     
     // Robust clear: Delete all files in directory
     QDir dir(m_cacheDir);
