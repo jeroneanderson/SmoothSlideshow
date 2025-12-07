@@ -34,11 +34,22 @@ void ConfigManager::load() {
 
     m_lastFolder = obj["last_folder"].toString();
     if (obj.contains("recursive")) m_recursive = obj["recursive"].toBool();
-    if (obj.contains("slide_duration")) m_slideDuration = obj["slide_duration"].toDouble();
-    if (obj.contains("transition_time")) m_transitionTime = obj["transition_time"].toDouble();
+    
+    if (obj.contains("slide_duration")) {
+        double val = obj["slide_duration"].toDouble();
+        if (val > 0.1) m_slideDuration = val;
+    }
+    if (obj.contains("transition_time")) {
+        double val = obj["transition_time"].toDouble();
+        if (val >= 0.0) m_transitionTime = val;
+    }
     if (obj.contains("random_order")) m_randomOrder = obj["random_order"].toBool();
     if (obj.contains("continuous_loop")) m_continuousLoop = obj["continuous_loop"].toBool();
-    if (obj.contains("cache_max_size_mb")) m_cacheMaxSizeMB = obj["cache_max_size_mb"].toDouble();
+    
+    if (obj.contains("cache_max_size_mb")) {
+        double val = obj["cache_max_size_mb"].toDouble();
+        if (val >= 1.0) m_cacheMaxSizeMB = val;
+    }
 }
 
 void ConfigManager::save() {
