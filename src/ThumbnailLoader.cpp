@@ -135,7 +135,7 @@ void ThumbnailLoader::process() {
                 QSize originalSize = reader.size();
                 // Target size 150x150
                 if (originalSize.isValid()) {
-                    int dim = 150;
+                    int dim = 300; // Match max slider zoom
                    if (originalSize.width() > dim || originalSize.height() > dim) {
                        reader.setScaledSize(originalSize.scaled(dim, dim, Qt::KeepAspectRatio));
                    }
