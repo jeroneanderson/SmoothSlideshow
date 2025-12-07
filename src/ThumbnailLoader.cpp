@@ -247,9 +247,14 @@ void ThumbnailLoader::cleanCache() {
 
 void ThumbnailLoader::clearCache() {
     QMutexLocker locker(&m_mutex);
-    for (auto it = m_metadata.begin(); it != m_metadata.end(); ++it) {
-        QFile::remove(it.value().cacheFile);
+    
+    // Robust clear: Delete all files in directory
+    QDir dir(m_cacheDir);
+    QStringList files = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+    for (const QString &file : files) {
+        dir.remove(file);
     }
+    
     m_metadata.clear();
     saveCacheMetadata();
     emit cacheCleared();
