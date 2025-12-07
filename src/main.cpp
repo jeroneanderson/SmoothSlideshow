@@ -4,14 +4,11 @@
 #include <QStyleFactory>
 #include <QPalette>
 
-#include <QDebug>
 
 int main(int argc, char *argv[]) {
-    qDebug() << "Starting application...";
     QApplication app(argc, argv);
     
     // Set Dark Theme (Fusion)
-    qDebug() << "Setting style...";
     app.setStyle(QStyleFactory::create("Fusion"));
     
     QPalette darkPalette;
@@ -30,18 +27,15 @@ int main(int argc, char *argv[]) {
     darkPalette.setColor(QPalette::HighlightedText, Qt::black);
     
     app.setPalette(darkPalette);
-    qDebug() << "Style set.";
     
     app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 
     QCoreApplication::setOrganizationName("Antigravity");
     QCoreApplication::setApplicationName("SmoothSlideshow");
     
-    qDebug() << "Creating MainWindow...";
     MainWindow w;
     w.resize(1024, 768);
     w.show();
     
-    qDebug() << "Entering event loop...";
     return app.exec();
 }
