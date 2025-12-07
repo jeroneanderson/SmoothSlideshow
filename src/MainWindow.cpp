@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QDateTime>
+#include <QPainter>
 #include <algorithm> // for std::shuffle
 #include <random>    // for std::default_random_engine
 
@@ -17,8 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Window Setup
     setWindowTitle("Smooth Slideshow C++ v1.0.45");
     setStyleSheet("QMainWindow { background-color: #222; color: white; }"
-                  "QLabel { color: white; }"
-                  "QCheckBox { color: white; }"
+                  "QWidget { color: white; }"
                   "QLineEdit { background-color: #444; color: white; border: 1px solid #555; }"
                   "QTextEdit { background-color: #333; color: white; border: none; }"
                   "QPushButton { background-color: #444; color: white; border: 1px solid #555; padding: 5px; }"
@@ -331,9 +331,20 @@ void MainWindow::onThumbnailReady(int index, QString path, QImage image) {
         if (localRow < m_listWidget->count()) {
             QListWidgetItem* item = m_listWidget->item(localRow);
             if (item) {
-                // Verify path match just in case
-                // if (item->data(Qt::UserRole).toString() == path) ...
-                item->setIcon(QIcon(QPixmap::fromImage(image)));
+                // Determine layout size
+                QSize iconSize = m_listWidget->iconSize();
+                QPixmap canvas(iconSize);
+                canvas.fill(Qt::transparent);
+                
+                // Draw centered
+                QPainter p(&canvas);
+                QPixmap thumb = QPixmap::fromImage(image);
+                int x = (iconSize.width() - thumb.width()) / 2;
+                int y = (iconSize.height() - thumb.height()) / 2;
+                p.drawPixmap(x, y, thumb);
+                p.end();
+
+                item->setIcon(QIcon(canvas));
             }
         }
     }
