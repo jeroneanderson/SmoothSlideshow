@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
+#include <QCloseEvent>
 #include <QDirIterator>
 #include <QKeyEvent>
 #include <QDebug>
@@ -16,9 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
       m_controlsVisible(true)
 {
     // Window Setup
-    setWindowTitle("Smooth Slideshow C++ v1.0.45");
     // Window Setup
-    setWindowTitle("Smooth Slideshow C++ v1.0.45");
+    setWindowTitle("Smooth Slideshow C++ v1.1.0");
     // Styling is handled globally in main.cpp via Fusion style and QPalette
                   
     // Threading Setup
@@ -82,9 +82,8 @@ void MainWindow::setupUi() {
     QHBoxLayout* topLayout = new QHBoxLayout(m_topFrame);
     m_btnSelectFolder = new QPushButton("Select Folder");
     m_btnStart = new QPushButton("Start Slideshow");
-    m_btnResume = new QPushButton("Resume Slideshow");
     m_btnQuit = new QPushButton("Quit Application");
-    m_lblVersion = new QLabel("v1.0.45");
+    m_lblVersion = new QLabel("v1.1.0");
     
     topLayout->addWidget(m_btnSelectFolder);
     topLayout->addWidget(m_btnStart);
@@ -357,6 +356,11 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
             displayCurrentPage();
         });
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    saveSettings();
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::nextPage() {
