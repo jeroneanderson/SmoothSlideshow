@@ -52,6 +52,7 @@ private slots:
 
 private:
     void setupUi();
+    void setupConnections();
     void populateThumbnails();
     void displayCurrentPage();
     void calculatePagination();

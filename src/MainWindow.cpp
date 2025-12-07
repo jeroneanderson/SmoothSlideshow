@@ -60,6 +60,9 @@ MainWindow::MainWindow(QWidget *parent)
         // Delay populate to ensure UI is ready
         QTimer::singleShot(100, this, &MainWindow::populateThumbnails);
     }
+    
+    // Connect signals LAST to prevent overwriting config with defaults on startup
+    setupConnections();
 }
 
 MainWindow::~MainWindow() {
@@ -188,11 +191,13 @@ void MainWindow::setupUi() {
     m_slideshowPage = new SlideshowWidget();
     m_stackedWidget->addWidget(m_slideshowPage);
     
-    // Connections
-    qDebug() << "setupUi: Connecting Signals";
+    qDebug() << "setupUi: Done (Connections moved to setupConnections)";
+}
+
+void MainWindow::setupConnections() {
+    qDebug() << "Setting up connections...";
     connect(m_btnSelectFolder, &QPushButton::clicked, this, &MainWindow::selectFolder);
     connect(m_btnStart, &QPushButton::clicked, this, &MainWindow::startSlideshow);
-    // connect(m_btnResume, &QPushButton::clicked, this, &MainWindow::resumeSlideshow); // Removed
     connect(m_btnQuit, &QPushButton::clicked, this, &MainWindow::quitApplication);
     connect(m_btnClearCache, &QPushButton::clicked, this, &MainWindow::clearCache);
     
@@ -209,14 +214,13 @@ void MainWindow::setupUi() {
     
     connect(m_listWidget, &QListWidget::itemClicked, this, &MainWindow::onThumbnailClicked);
     
-    qDebug() << "setupUi: Connecting Slider";
     connect(m_sliderZoom, &QSlider::valueChanged, [this](int value){
          m_listWidget->setIconSize(QSize(value, value));
          m_listWidget->setGridSize(QSize(value + 20, value + 50)); // More vertical space for text
          calculatePagination();
          displayCurrentPage();
     });
-    qDebug() << "setupUi: All Done";
+    qDebug() << "Connections set.";
 }
 
 void MainWindow::selectFolder() {
