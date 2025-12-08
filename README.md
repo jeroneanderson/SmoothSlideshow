@@ -9,7 +9,7 @@ A native C++ Qt implementation of a smooth slideshow viewer. Originally designed
 
 ---
 
-##  macOS Build Instructions
+## <img src="assets/apple_logo.png" height="30"/> macOS Build Instructions
 
 ### 1. Prerequisites
 You need Homebrew and Xcode Command Line Tools.
