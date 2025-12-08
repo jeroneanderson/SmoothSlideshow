@@ -53,7 +53,7 @@ open SmoothSlideshow.app
 
 ---
 
-## 🍓 Raspberry Pi Build Instructions
+## <img src="assets/raspberry_pi_logo.png" height="30"/> Raspberry Pi Build Instructions
 
 ### 1. Prerequisites
 ```bash
